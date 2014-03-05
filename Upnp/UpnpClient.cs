@@ -1,9 +1,26 @@
-﻿using System;
+﻿/*  
+    Copyright (C) <2007-2014>  <Kay Diefenthal>
+
+    SatIp.DiscoverySample is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SatIp.DiscoverySample is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SatIp.DiscoverySample.  If not, see <http://www.gnu.org/licenses/>.
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using SatIp.DiscoverySample.Logging;
 
 namespace SatIp.DiscoverySample.Upnp
 {
@@ -129,13 +146,13 @@ namespace SatIp.DiscoverySample.Upnp
             query.Append("MX: 2\r\n");
             query.Append("ST: " +deviceType+"\r\n");
             query.Append("\r\n");
-
+            Logger.Info("Broadcast Message is \r\n{0} \r\n", query.ToString());
             using(var socket = new Socket(AddressFamily.InterNetwork,SocketType.Dgram,ProtocolType.Udp))
             {
                 socket.SetSocketOption(SocketOptionLevel.Socket,SocketOptionName.Broadcast,1);
                 socket.SetSocketOption(SocketOptionLevel.Socket,SocketOptionName.IpTimeToLive,2);
                 socket.SendTo(Encoding.UTF8.GetBytes(query.ToString()),new IPEndPoint(IPAddress.Broadcast,1900));
-
+                Logger.Info("Broadcast Message sended !");
                 var deviceLocations = new List<string>();    
                 var buffer          = new byte[32000];
                 var startTime       = DateTime.Now;
@@ -144,6 +161,7 @@ namespace SatIp.DiscoverySample.Upnp
                     if(socket.Poll(1,SelectMode.SelectRead)){
                         var countReceived = socket.Receive(buffer);
                         var responseLines = Encoding.UTF8.GetString(buffer,0,countReceived).Split('\n');
+                        Logger.Info("Have Found : \r\n{0} \r\n", Encoding.UTF8.GetString(buffer, 0, countReceived));
                         deviceLocations.AddRange(from responseLine in responseLines select responseLine.Split(new[] {':'}, 2) into nameValue where string.Equals(nameValue[0], "location", StringComparison.InvariantCultureIgnoreCase) select nameValue[1].Trim());
                     }
                 }
@@ -152,13 +170,15 @@ namespace SatIp.DiscoverySample.Upnp
                 {
                     try
                     {
+                        Logger.Info("Create UpnpDevice for this Location \r\n{0} \r\n ", location);
                         devices.Add(new UpnpDevice(location));
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
-                        Console.WriteLine(@"anything isnt ok with location or description");
+                        Logger.Error(@"Anything isnt ok with location or description {0}: ",exception);
                     }
                 }
+                Logger.Info("Total Founded are \r\n{0} \r\n ", devices.Count);
                 return devices.ToArray();
             }
         }
@@ -181,15 +201,17 @@ namespace SatIp.DiscoverySample.Upnp
             {
                 timeout = 1;
             }
+            var query = new StringBuilder();
+            query.Append("M-SEARCH * HTTP/1.1\r\n");
+            query.Append("MAN: \"ssdp:discover\"\r\n");
+            query.Append("MX: 2\r\n");
+            query.Append("ST: " + deviceType + "\r\n");
+            query.Append("\r\n");
+            Logger.Info("Broadcast Message is \r\n {0}: ", query.ToString());
             using(var socket = new Socket(AddressFamily.InterNetwork,SocketType.Dgram,ProtocolType.Udp)){
                 socket.SetSocketOption(SocketOptionLevel.Socket,SocketOptionName.IpTimeToLive,2);
-                var query = new StringBuilder();
-                query.Append("M-SEARCH * HTTP/1.1\r\n");
-                query.Append("MAN: \"ssdp:discover\"\r\n");
-                query.Append("MX: 2\r\n");
-                query.Append("ST: " + deviceType + "\r\n");
-                query.Append("\r\n");
                 socket.SendTo(Encoding.UTF8.GetBytes(query.ToString()),new IPEndPoint(ip,1900));
+                Logger.Info("Broadcast Message sended !");
                 var deviceLocations = new List<string>();    
                 var buffer          = new byte[32000];
                 var startTime       = DateTime.Now;
@@ -199,6 +221,7 @@ namespace SatIp.DiscoverySample.Upnp
                     {
                         var countReceived = socket.Receive(buffer);
                         var responseLines = Encoding.UTF8.GetString(buffer,0,countReceived).Split('\n');
+                        Logger.Info("Have Found :  \r\n {0}", Encoding.UTF8.GetString(buffer, 0, countReceived));
                         deviceLocations.AddRange(from responseLine in responseLines select responseLine.Split(new[] {':'}, 2) into nameValue where string.Equals(nameValue[0], "location", StringComparison.InvariantCultureIgnoreCase) select nameValue[1].Trim());
                     }
                 }
@@ -206,13 +229,15 @@ namespace SatIp.DiscoverySample.Upnp
                 foreach(var location in deviceLocations){
                     try
                     {
+                        Logger.Info("Create UpnpDevice for this Location {0}: ", location);
                         devices.Add(new UpnpDevice(location));
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
-                        Console.WriteLine(@"anything isnt ok with location or description");
+                        Logger.Error(@"Anything isnt ok with location or description {0}: ", exception);
                     }
                 }
+                Logger.Info("Total Founded are {0}: ", devices.Count);
                 return devices.ToArray();
             }        
         }

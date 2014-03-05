@@ -1,8 +1,25 @@
-﻿using System;
+﻿/*  
+    Copyright (C) <2007-2014>  <Kay Diefenthal>
+
+    SatIp.DiscoverySample is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SatIp.DiscoverySample is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SatIp.DiscoverySample.  If not, see <http://www.gnu.org/licenses/>.
+*/
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
+using SatIp.DiscoverySample.Logging;
 
 namespace SatIp.DiscoverySample.Upnp
 {
@@ -49,71 +66,80 @@ namespace SatIp.DiscoverySample.Upnp
 
         private void Init(string url)
         {
-            var document = XDocument.Load(url);
-            var xnm= new XmlNamespaceManager(new NameTable());
-            XNamespace n1 = "urn:ses-com:satip";
-            XNamespace n0 = "urn:schemas-upnp-org:device-1-0";
-            xnm.AddNamespace("root", n0.NamespaceName);
-            xnm.AddNamespace("satip",n1.NamespaceName);
-            if (document.Root != null)
+            try
             {
-                var deviceElement = document.Root.Element(n0 + "device");
-                var addressline = Regex.Split(url, @"://+");
-                var address = addressline[1].Split(':');
-                BaseHost = address[0];
-                var port = address[1].Split('/');
-                BasePort = port[0];
-                _deviceDescription = document.Declaration+document.ToString();
-                if (deviceElement != null)
+                Logger.Info("the Description Url is {0}", url);
+                var document = XDocument.Load(url);
+                var xnm= new XmlNamespaceManager(new NameTable());
+                XNamespace n1 = "urn:ses-com:satip";
+                XNamespace n0 = "urn:schemas-upnp-org:device-1-0";
+                xnm.AddNamespace("root", n0.NamespaceName);
+                xnm.AddNamespace("satip",n1.NamespaceName);
+                if (document.Root != null)
                 {
-                    var devicetypeElement = deviceElement.Element(n0+"deviceType");
-                    if (devicetypeElement != null)
-                        _deviceType = devicetypeElement.Value;
-                    var friendlynameElement = deviceElement.Element(n0+"friendlyName");
-                    if (friendlynameElement != null)
-                        _friendlyName = friendlynameElement.Value;
-                    var manufactureElement = deviceElement.Element(n0+"manufacturer");
-                    if (manufactureElement != null)
-                        _manufacturer = manufactureElement.Value;
-                    var manufactureurlElement = deviceElement.Element(n0 + "manufacturerURL");
-                    if (manufactureurlElement != null)
-                        _manufacturerUrl = manufactureurlElement.Value;
-                    var modeldescriptionElement = deviceElement.Element(n0 + "modelDescription");
-                    if (modeldescriptionElement != null)
-                        _modelDescription = modeldescriptionElement.Value;
-                    var modelnameElement = deviceElement.Element(n0 + "modelName");
-                    if (modelnameElement != null)
-                        _modelName = modelnameElement.Value;
-                    var modelnumberElement = deviceElement.Element(n0 + "modelNumber");
-                    if (modelnumberElement != null)
-                        _modelNumber = modelnumberElement.Value;
-                    var modelurlElement = deviceElement.Element(n0 + "modelURL");
-                    if (modelurlElement != null)
-                        _modelUrl = modelurlElement.Value;
-                    var serialnumberElement = deviceElement.Element(n0 + "serialNumber");
-                    if (serialnumberElement != null)
-                        _serialNumber = serialnumberElement.Value;
-                    var uniquedevicenameElement = deviceElement.Element(n0 + "UDN");
-                    if (uniquedevicenameElement != null) _uDN = uniquedevicenameElement.Value;
-                    var iconList = deviceElement.Element(n0 + "iconList");
-                    if (iconList != null)
+                    var deviceElement = document.Root.Element(n0 + "device");
+                    var addressline = Regex.Split(url, @"://+");
+                    var address = addressline[1].Split(':');
+                    BaseHost = address[0];
+                    var port = address[1].Split('/');
+                    BasePort = port[0];
+                    _deviceDescription = document.Declaration + document.ToString();
+                    Logger.Info("The Description has this Content {0}",_deviceDescription);
+                    if (deviceElement != null)
                     {
-                        var icons = from query in iconList.Descendants(n0 + "icon")
-                            select new UpnpIcon
-                            {
-                                // Needed to change mimeType to mimetype. XML is case sensitive 
-                                MimeType = (string)query.Element(n0 + "mimetype"),
-                                Url = (string)query.Element(n0 + "url"),
-                                Height = (int)query.Element(n0 + "height"),
-                                Width = (int)query.Element(n0 + "width"),
-                                Depth = (int)query.Element(n0 + "depth"),
-                            };
+                        var devicetypeElement = deviceElement.Element(n0 + "deviceType");
+                        if (devicetypeElement != null)
+                            _deviceType = devicetypeElement.Value;
+                        var friendlynameElement = deviceElement.Element(n0 + "friendlyName");
+                        if (friendlynameElement != null)
+                            _friendlyName = friendlynameElement.Value;
+                        var manufactureElement = deviceElement.Element(n0 + "manufacturer");
+                        if (manufactureElement != null)
+                            _manufacturer = manufactureElement.Value;
+                        var manufactureurlElement = deviceElement.Element(n0 + "manufacturerURL");
+                        if (manufactureurlElement != null)
+                            _manufacturerUrl = manufactureurlElement.Value;
+                        var modeldescriptionElement = deviceElement.Element(n0 + "modelDescription");
+                        if (modeldescriptionElement != null)
+                            _modelDescription = modeldescriptionElement.Value;
+                        var modelnameElement = deviceElement.Element(n0 + "modelName");
+                        if (modelnameElement != null)
+                            _modelName = modelnameElement.Value;
+                        var modelnumberElement = deviceElement.Element(n0 + "modelNumber");
+                        if (modelnumberElement != null)
+                            _modelNumber = modelnumberElement.Value;
+                        var modelurlElement = deviceElement.Element(n0 + "modelURL");
+                        if (modelurlElement != null)
+                            _modelUrl = modelurlElement.Value;
+                        var serialnumberElement = deviceElement.Element(n0 + "serialNumber");
+                        if (serialnumberElement != null)
+                            _serialNumber = serialnumberElement.Value;
+                        var uniquedevicenameElement = deviceElement.Element(n0 + "UDN");
+                        if (uniquedevicenameElement != null) _uDN = uniquedevicenameElement.Value;
+                        var iconList = deviceElement.Element(n0 + "iconList");
+                        if (iconList != null)
+                        {
+                            var icons = from query in iconList.Descendants(n0 + "icon")
+                                select new UpnpIcon
+                                {
+                                    // Needed to change mimeType to mimetype. XML is case sensitive 
+                                    MimeType = (string) query.Element(n0 + "mimetype"),
+                                    Url = (string) query.Element(n0 + "url"),
+                                    Height = (int) query.Element(n0 + "height"),
+                                    Width = (int) query.Element(n0 + "width"),
+                                    Depth = (int) query.Element(n0 + "depth"),
+                                };
 
-                        _iconList = icons.ToArray();
+                            _iconList = icons.ToArray();
+                        }
+                        _presentationUrl = deviceElement.Element(n0 + "presentationURL").Value;
+                        _frontends = deviceElement.Element(n1 + "X_SATIPCAP").Value;
                     }
-                    _presentationUrl = deviceElement.Element(n0 + "presentationURL").Value;
-                    _frontends= deviceElement.Element(n1 +"X_SATIPCAP").Value;
                 }
+            }
+            catch (Exception exception)
+            {
+                Logger.Error("It give a Problem with the Description {0}", exception);
             }
         }
         
