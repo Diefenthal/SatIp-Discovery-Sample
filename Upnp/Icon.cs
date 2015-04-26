@@ -17,9 +17,9 @@
 
 namespace SatIp.DiscoverySample.Upnp
 {
-    public class UpnpIcon
+    public class Icon
     {
-        public UpnpIcon()
+        public Icon()
         {
             Url = "";
             MimeType = "";

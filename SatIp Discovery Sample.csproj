@@ -73,7 +73,7 @@
   <ItemGroup>
     <Compile Include="Logging\LogDurationScope.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Upnp\UpnpClient.cs" />
+    <Compile Include="Upnp\SSDPClient.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,8 +106,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Upnp\UpnpDevice.cs" />
-    <Compile Include="Upnp\UpnpIcon.cs" />
+    <Compile Include="Upnp\SatIpDevice.cs" />
+    <Compile Include="Upnp\Icon.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="GNU General Public License.txt" />

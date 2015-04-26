@@ -24,9 +24,9 @@ using SatIp.DiscoverySample.Logging;
 
 namespace SatIp.DiscoverySample.Upnp
 {
-    public class UpnpDevice
+    public class SatIpDevice
     {
-        private string _baseHost = "";
+        private Uri _baseUrl;
         private string _deviceType = "";
         private string _friendlyName = "";
         private string _manufacturer = "";
@@ -36,56 +36,53 @@ namespace SatIp.DiscoverySample.Upnp
         private string _modelNumber = "";
         private string _modelUrl = "";
         private string _serialNumber = "";
-        private string _uDN = "";
+        private string _uniqueDeviceName = "";
         private string _presentationUrl = "";
         private string _deviceDescription;
-        private UpnpIcon[] _iconList = new UpnpIcon[4];
-        private string _frontends = "";
-        private string _basePort;
+        private Icon[] _iconList = new Icon[4];
+        private string _capabilities = "";
+        private string _m3u = "";
 
         /// <summary>
         /// Default constructor.
         /// </summary>
         /// <param name="url">Device URL.</param>
-        internal UpnpDevice(string url)
+        internal SatIpDevice(string url)
         {
             if (url == null)
             {
                 throw new ArgumentNullException("url");
             }
 
-            Init(url);
+            Init(new Uri(url));
         }
 
         #region method Init
 
         public string GetImage(int index)
         {
-            var icon=(UpnpIcon)_iconList.GetValue(index);
+            var icon=(Icon)_iconList.GetValue(index);
             return  icon.Url;
         }
 
-        private void Init(string url)
+        private void Init(Uri locationUri)
         {
             try
             {
-                Logger.Info("the Description Url is {0}", url);
-                var document = XDocument.Load(url);
+                Logger.Info("the Description Url is {0}", locationUri);
+                BaseUrl = locationUri;
+                var document = XDocument.Load(locationUri.AbsoluteUri);
                 var xnm= new XmlNamespaceManager(new NameTable());
                 XNamespace n1 = "urn:ses-com:satip";
                 XNamespace n0 = "urn:schemas-upnp-org:device-1-0";
                 xnm.AddNamespace("root", n0.NamespaceName);
-                xnm.AddNamespace("satip",n1.NamespaceName);
+                xnm.AddNamespace("satip:",n1.NamespaceName);
                 if (document.Root != null)
                 {
                     var deviceElement = document.Root.Element(n0 + "device");
-                    var addressline = Regex.Split(url, @"://+");
-                    var address = addressline[1].Split(':');
-                    BaseHost = address[0];
-                    var port = address[1].Split('/');
-                    BasePort = port[0];
+                    
                     _deviceDescription = document.Declaration + document.ToString();
-                    Logger.Info("The Description has this Content {0}",_deviceDescription);
+                    Logger.Info("The Description has this Content \r\n{0}",_deviceDescription);
                     if (deviceElement != null)
                     {
                         var devicetypeElement = deviceElement.Element(n0 + "deviceType");
@@ -116,12 +113,12 @@ namespace SatIp.DiscoverySample.Upnp
                         if (serialnumberElement != null)
                             _serialNumber = serialnumberElement.Value;
                         var uniquedevicenameElement = deviceElement.Element(n0 + "UDN");
-                        if (uniquedevicenameElement != null) _uDN = uniquedevicenameElement.Value;
+                        if (uniquedevicenameElement != null) _uniqueDeviceName = uniquedevicenameElement.Value;
                         var iconList = deviceElement.Element(n0 + "iconList");
                         if (iconList != null)
                         {
                             var icons = from query in iconList.Descendants(n0 + "icon")
-                                select new UpnpIcon
+                                select new Icon
                                 {
                                     // Needed to change mimeType to mimetype. XML is case sensitive 
                                     MimeType = (string) query.Element(n0 + "mimetype"),
@@ -133,8 +130,13 @@ namespace SatIp.DiscoverySample.Upnp
 
                             _iconList = icons.ToArray();
                         }
-                        _presentationUrl = deviceElement.Element(n0 + "presentationURL").Value;
-                        _frontends = deviceElement.Element(n1 + "X_SATIPCAP").Value;
+
+                        var presentationUrlElement = deviceElement.Element(n0 + "presentationURL");
+                        if (presentationUrlElement != null) _presentationUrl = presentationUrlElement.Value;
+                        var capabilitiesElement = deviceElement.Element(n1 + "X_SATIPCAP");
+                        if (capabilitiesElement != null) _capabilities = capabilitiesElement.Value;
+                        var m3uElement = deviceElement.Element(n1 + "X_SATIPM3U");
+                        if (m3uElement != null) _m3u = m3uElement.Value;
                     }
                 }
             }
@@ -224,14 +226,10 @@ namespace SatIp.DiscoverySample.Upnp
         /// <summary>
         /// Gets unique device name.
         /// </summary>
-        public string UDN
+        public string UniqueDeviceName
         {
-            get{ return _uDN; }
+            get{ return _uniqueDeviceName; }
         }
-
-        // iconList
-        // serviceList
-        // deviceList
 
         /// <summary>
         /// Gets device UI url.
@@ -249,22 +247,22 @@ namespace SatIp.DiscoverySample.Upnp
             get{ return _deviceDescription; }
         }
 
-        public string BaseHost
+        public Uri BaseUrl
         {
-            get { return _baseHost; }
-            set { _baseHost = value; }
+            get { return _baseUrl; }
+            set { _baseUrl = value; }
         }
 
-        public string BasePort
+        public string M3U
         {
-            get { return _basePort; }
-            set { _basePort = value; }
+            get { return _m3u; }
+            set { _m3u = value; }
         }
 
-        public string Frontends
+        public string Capabilities
         {
-            get { return _frontends; }
-            set { _frontends = value; }
+            get { return _capabilities; }
+            set { _capabilities = value; }
         }
 
         #endregion
