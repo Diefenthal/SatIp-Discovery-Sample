@@ -1,5 +1,5 @@
 ﻿/*  
-    Copyright (C) <2007-2015>  <Kay Diefenthal>
+    Copyright (C) <2007-2016>  <Kay Diefenthal>
 
     SatIp.DiscoverySample is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ namespace SatIp.DiscoverySample.Upnp
         private readonly int _unicastPort;
         private UdpClient _multicastClient;
         private UdpClient _unicastClient;
-
+        private Dictionary<string, SatIpDevice> _devices = new Dictionary<string, SatIpDevice>();
         #endregion
 
         #region Constructor
@@ -134,16 +134,25 @@ namespace SatIp.DiscoverySample.Upnp
                         if (usn != null)
                         {
                             var usnsections = usn.Split(':');
-                            OnDeviceLost(new SatIpDeviceLostArgs(usnsections[0] + ":" + usnsections[1]));
+                            var uuid = usnsections[0] + ":" + usnsections[1];
+                            if (_devices.ContainsKey(uuid))
+                            { _devices.Remove(uuid); }
+                            OnDeviceLost(new SatIpDeviceLostArgs(uuid));
                         }
                     }
                     if (nts != null &&
                         (nt != null && (nt.Equals("urn:ses-com:device:SatIPServer:1") && nts.Equals("ssdp:alive"))))
                     {
-                        if (usn != null)
+                        if (!string.IsNullOrEmpty(location))
                         {
                             var usnsections = usn.Split(':');
-                            OnDeviceNotify(new SatIpDeviceNotifyArgs(usnsections[0] + ":" + usnsections[1]));
+                            var uuid = usnsections[0] + ":" + usnsections[1];
+                            if (!_devices.ContainsKey(uuid))
+                            {
+                                var device = new SatIpDevice(location);
+                                _devices.Add(uuid, device);
+                                OnDeviceFound(new SatIpDeviceFoundArgs(device));
+                            }
                         }
                     }
                 }
@@ -198,8 +207,14 @@ namespace SatIp.DiscoverySample.Upnp
                     headerDictionary.TryGetValue("deviceid.ses.com", out deviceId);
                     if (!string.IsNullOrEmpty(location))
                     {
-                        var device = new SatIpDevice(location);
-                        OnDeviceFound(new SatIpDeviceFoundArgs(device));
+                        var usnsections = uuid.Split(':');
+                        var usn = usnsections[0] + ":" + usnsections[1];
+                        if (!_devices.ContainsKey(usn))
+                        {
+                            var device = new SatIpDevice(location);
+                            _devices.Add(usn, device);
+                            OnDeviceFound(new SatIpDeviceFoundArgs(device));
+                        }
                     }
                 }
 
@@ -279,7 +294,15 @@ namespace SatIp.DiscoverySample.Upnp
                 _unicastClient.Send(req, req.Length, ipTxEnd);
             }
         }
-
+        public SatIpDevice FindByUDN(string uuid)
+        {
+            SatIpDevice device = null;
+            if (_devices.ContainsKey(uuid))
+            {
+                _devices.TryGetValue(uuid, out device);
+            }
+            return device;
+        }
         /// <summary>
         /// Start Unicast and Multicast Listener
         /// </summary>
