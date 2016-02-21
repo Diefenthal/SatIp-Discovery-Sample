@@ -36,6 +36,9 @@ namespace SatIp.DiscoverySample.Upnp
 
     public class SSDPClient
     {
+
+        //private static readonly Regex UuidRegex = new Regex("(?<=uuid:)(.+?)(?=(::)|$)");
+        private static readonly Regex UuidRegex = new Regex("(uuid:)(.+?)(?=(::)|$)");
         private static readonly Regex HttpResponseRegex = new Regex(@"HTTP/(\d+)\.(\d+)\s+(\d+)\s+([^.]+?)\r\n(.*)",
             RegexOptions.Singleline);
 
@@ -128,13 +131,15 @@ namespace SatIp.DiscoverySample.Upnp
                     headerDictionary.TryGetValue("bootid.upnp.org", out bootId);
                     string configId;
                     headerDictionary.TryGetValue("configid.upnp.org", out configId);
+                    var m = UuidRegex.Match(usn);
+                    if (!m.Success)
+                        return;
+                    var uuid = m.Value;
                     if (nts != null &&
                         (nt != null && (nt.Equals("urn:ses-com:device:SatIPServer:1") && nts.Equals("ssdp:byebye"))))
                     {
                         if (usn != null)
-                        {
-                            var usnsections = usn.Split(':');
-                            var uuid = usnsections[0] + ":" + usnsections[1];
+                        {                            
                             if (_devices.ContainsKey(uuid))
                             { _devices.Remove(uuid); }
                             OnDeviceLost(new SatIpDeviceLostArgs(uuid));
@@ -144,9 +149,7 @@ namespace SatIp.DiscoverySample.Upnp
                         (nt != null && (nt.Equals("urn:ses-com:device:SatIPServer:1") && nts.Equals("ssdp:alive"))))
                     {
                         if (!string.IsNullOrEmpty(location))
-                        {
-                            var usnsections = usn.Split(':');
-                            var uuid = usnsections[0] + ":" + usnsections[1];
+                        {                           
                             if (!_devices.ContainsKey(uuid))
                             {
                                 var device = new SatIpDevice(location);
@@ -197,22 +200,24 @@ namespace SatIp.DiscoverySample.Upnp
                     headerDictionary.TryGetValue("location", out location);
                     string st;
                     headerDictionary.TryGetValue("st", out st);
-                    string uuid;
-                    headerDictionary.TryGetValue("usn", out uuid);
+                    string usn;
+                    headerDictionary.TryGetValue("usn", out usn);
                     string bootId;
                     headerDictionary.TryGetValue("bootid.upnp.org", out bootId);
                     string configId;
                     headerDictionary.TryGetValue("configid.upnp.org", out configId);
                     string deviceId;
                     headerDictionary.TryGetValue("deviceid.ses.com", out deviceId);
-                    if (!string.IsNullOrEmpty(location))
-                    {
-                        var usnsections = uuid.Split(':');
-                        var usn = usnsections[0] + ":" + usnsections[1];
-                        if (!_devices.ContainsKey(usn))
+                    var m = UuidRegex.Match(usn);
+                    if (!m.Success)
+                        return;
+                    var uuid = m.Value;
+                    if ((!string.IsNullOrEmpty(location))&&(!string.IsNullOrEmpty(st))&&(st.Equals("urn:ses-com:device:SatIPServer:1")))
+                    {                        
+                        if (!_devices.ContainsKey(uuid))
                         {
                             var device = new SatIpDevice(location);
-                            _devices.Add(usn, device);
+                            _devices.Add(uuid, device);
                             OnDeviceFound(new SatIpDeviceFoundArgs(device));
                         }
                     }
