@@ -33,7 +33,7 @@ namespace SatIp.DiscoverySample
             _client.DeviceFound += DeviceFound;
             _client.DeviceLost += DeviceLost;           
             _client.Start();
-            _client.FindByType();
+            _client.FindByType("urn:ses-com:device:SatIPServer:1");
         }
 
         private void DeviceFound(object sender, SatIpDeviceFoundArgs args)

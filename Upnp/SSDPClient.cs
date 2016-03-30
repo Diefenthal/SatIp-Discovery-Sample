@@ -37,7 +37,7 @@ namespace SatIp.DiscoverySample.Upnp
     public class SSDPClient
     {
 
-        //private static readonly Regex UuidRegex = new Regex("(?<=uuid:)(.+?)(?=(::)|$)");
+        
         private static readonly Regex UuidRegex = new Regex("(uuid:)(.+?)(?=(::)|$)");
         private static readonly Regex HttpResponseRegex = new Regex(@"HTTP/(\d+)\.(\d+)\s+(\d+)\s+([^.]+?)\r\n(.*)",
             RegexOptions.Singleline);
@@ -92,76 +92,78 @@ namespace SatIp.DiscoverySample.Upnp
         /// <param name="ar"></param>
         private void MulticastReceiveCallback(IAsyncResult ar)
         {
-            var u = ((UdpState) (ar.AsyncState)).U;
-            var e = ((UdpState) (ar.AsyncState)).E;
-            if (u.Client != null)
+            if (_running)
             {
-                var responseBytes = u.EndReceive(ar, ref e);
-                var responseString = Encoding.UTF8.GetString(responseBytes);
-                var msearchMatch = MSearchResponseRegex.Match(responseString);
-                if (msearchMatch.Success)
+                var u = ((UdpState)(ar.AsyncState)).U;
+                var e = ((UdpState)(ar.AsyncState)).E;
+                if (u.Client != null)
                 {
-                    responseString = msearchMatch.Groups[3].Captures[0].Value;
-                    var headerDictionary = Parse(responseString);
-                    string host;
-                    headerDictionary.TryGetValue("host", out host);
-                    string man;
-                    headerDictionary.TryGetValue("man", out man);
-                    string mx;
-                    headerDictionary.TryGetValue("mx", out mx);
-                    string st;
-                    headerDictionary.TryGetValue("st", out st);
-                }
-                var notifyMatch = NotifyResponseRegex.Match(responseString);
-                if (notifyMatch.Success)
-                {
-                    responseString = notifyMatch.Groups[3].Captures[0].Value;
-                    var headerDictionary = Parse(responseString);
-                    string location;
-                    headerDictionary.TryGetValue("location", out location);
-                    string host;
-                    headerDictionary.TryGetValue("host", out host);
-                    string nt;
-                    headerDictionary.TryGetValue("nt", out nt);
-                    string nts;
-                    headerDictionary.TryGetValue("nts", out nts);
-                    string usn;
-                    headerDictionary.TryGetValue("usn", out usn);
-                    string bootId;
-                    headerDictionary.TryGetValue("bootid.upnp.org", out bootId);
-                    string configId;
-                    headerDictionary.TryGetValue("configid.upnp.org", out configId);
-                    var m = UuidRegex.Match(usn);
-                    if (!m.Success)
-                        return;
-                    var uuid = m.Value;
-                    if (nts != null &&
-                        (nt != null && (nt.Equals("urn:ses-com:device:SatIPServer:1") && nts.Equals("ssdp:byebye"))))
+                    var responseBytes = u.EndReceive(ar, ref e);
+                    var responseString = Encoding.UTF8.GetString(responseBytes);
+                    var msearchMatch = MSearchResponseRegex.Match(responseString);
+                    if (msearchMatch.Success)
                     {
-                        if (usn != null)
-                        {                            
-                            if (_devices.ContainsKey(uuid))
-                            { _devices.Remove(uuid); }
-                            OnDeviceLost(new SatIpDeviceLostArgs(uuid));
-                        }
+                        responseString = msearchMatch.Groups[3].Captures[0].Value;
+                        var headerDictionary = Parse(responseString);
+                        string host;
+                        headerDictionary.TryGetValue("host", out host);
+                        string man;
+                        headerDictionary.TryGetValue("man", out man);
+                        string mx;
+                        headerDictionary.TryGetValue("mx", out mx);
+                        string st;
+                        headerDictionary.TryGetValue("st", out st);
                     }
-                    if (nts != null &&
-                        (nt != null && (nt.Equals("urn:ses-com:device:SatIPServer:1") && nts.Equals("ssdp:alive"))))
+                    var notifyMatch = NotifyResponseRegex.Match(responseString);
+                    if (notifyMatch.Success)
                     {
-                        if (!string.IsNullOrEmpty(location))
-                        {                           
-                            if (!_devices.ContainsKey(uuid))
+                        responseString = notifyMatch.Groups[3].Captures[0].Value;
+                        var headerDictionary = Parse(responseString);
+                        string location;
+                        headerDictionary.TryGetValue("location", out location);
+                        string host;
+                        headerDictionary.TryGetValue("host", out host);
+                        string nt;
+                        headerDictionary.TryGetValue("nt", out nt);
+                        string nts;
+                        headerDictionary.TryGetValue("nts", out nts);
+                        string usn;
+                        headerDictionary.TryGetValue("usn", out usn);
+                        string bootId;
+                        headerDictionary.TryGetValue("bootid.upnp.org", out bootId);
+                        string configId;
+                        headerDictionary.TryGetValue("configid.upnp.org", out configId);
+                        var m = UuidRegex.Match(usn);
+                        if (!m.Success)
+                            return;
+                        var uuid = m.Value;
+                        if (nts != null &&
+                            (nt != null && (nt.Equals("urn:ses-com:device:SatIPServer:1") && nts.Equals("ssdp:byebye"))))
+                        {
+                            if (usn != null)
                             {
-                                var device = new SatIpDevice(location);
-                                _devices.Add(uuid, device);
-                                OnDeviceFound(new SatIpDeviceFoundArgs(device));
+                                if (_devices.ContainsKey(uuid))
+                                { _devices.Remove(uuid); }
+                                OnDeviceLost(new SatIpDeviceLostArgs(uuid));
+                            }
+                        }
+                        if (nts != null &&
+                            (nt != null && (nt.Equals("urn:ses-com:device:SatIPServer:1") && nts.Equals("ssdp:alive"))))
+                        {
+                            if (!string.IsNullOrEmpty(location))
+                            {
+                                if (!_devices.ContainsKey(uuid))
+                                {
+                                    var device = new SatIpDevice(location);
+                                    _devices.Add(uuid, device);
+                                    OnDeviceFound(new SatIpDeviceFoundArgs(device));
+                                }
                             }
                         }
                     }
                 }
-            }
-            if (_running)
                 MulticastSetBeginReceive();
+            }
         }
 
         /// <summary>
@@ -185,46 +187,47 @@ namespace SatIp.DiscoverySample.Upnp
         /// <param name="ar"></param>
         private void UnicastReceiveCallback(IAsyncResult ar)
         {
-            var u = ((UdpState) (ar.AsyncState)).U;
-            var e = ((UdpState) (ar.AsyncState)).E;
-            if (u.Client != null)
+            if (_running)
             {
-                var responseBytes = u.EndReceive(ar, ref e);
-                var responseString = Encoding.UTF8.GetString(responseBytes);
-                var httpMatch = HttpResponseRegex.Match(responseString);
-                if (httpMatch.Success)
+                var u = ((UdpState)(ar.AsyncState)).U;
+                var e = ((UdpState)(ar.AsyncState)).E;
+                if (u.Client != null)
                 {
-                    responseString = httpMatch.Groups[5].Captures[0].Value;
-                    var headerDictionary = Parse(responseString);
-                    string location;
-                    headerDictionary.TryGetValue("location", out location);
-                    string st;
-                    headerDictionary.TryGetValue("st", out st);
-                    string usn;
-                    headerDictionary.TryGetValue("usn", out usn);
-                    string bootId;
-                    headerDictionary.TryGetValue("bootid.upnp.org", out bootId);
-                    string configId;
-                    headerDictionary.TryGetValue("configid.upnp.org", out configId);
-                    string deviceId;
-                    headerDictionary.TryGetValue("deviceid.ses.com", out deviceId);
-                    var m = UuidRegex.Match(usn);
-                    if (!m.Success)
-                        return;
-                    var uuid = m.Value;
-                    if ((!string.IsNullOrEmpty(location))&&(!string.IsNullOrEmpty(st))&&(st.Equals("urn:ses-com:device:SatIPServer:1")))
-                    {                        
-                        if (!_devices.ContainsKey(uuid))
+                    var responseBytes = u.EndReceive(ar, ref e);
+                    var responseString = Encoding.UTF8.GetString(responseBytes);
+                    var httpMatch = HttpResponseRegex.Match(responseString);
+                    if (httpMatch.Success)
+                    {
+                        responseString = httpMatch.Groups[5].Captures[0].Value;
+                        var headerDictionary = Parse(responseString);
+                        string location;
+                        headerDictionary.TryGetValue("location", out location);
+                        string st;
+                        headerDictionary.TryGetValue("st", out st);
+                        string usn;
+                        headerDictionary.TryGetValue("usn", out usn);
+                        string bootId;
+                        headerDictionary.TryGetValue("bootid.upnp.org", out bootId);
+                        string configId;
+                        headerDictionary.TryGetValue("configid.upnp.org", out configId);
+                        string deviceId;
+                        headerDictionary.TryGetValue("deviceid.ses.com", out deviceId);
+                        var m = UuidRegex.Match(usn);
+                        if (!m.Success)
+                            return;
+                        var uuid = m.Value;
+                        if ((!string.IsNullOrEmpty(location)) && (!string.IsNullOrEmpty(st)) && (st.Equals("urn:ses-com:device:SatIPServer:1")))
                         {
-                            var device = new SatIpDevice(location);
-                            _devices.Add(uuid, device);
-                            OnDeviceFound(new SatIpDeviceFoundArgs(device));
+                            if (!_devices.ContainsKey(uuid))
+                            {
+                                var device = new SatIpDevice(location);
+                                _devices.Add(uuid, device);
+                                OnDeviceFound(new SatIpDeviceFoundArgs(device));
+                            }
                         }
                     }
-                }
-
-                if (_running)
                     UnicastSetBeginReceive();
+                }
             }
         }
 
@@ -276,7 +279,7 @@ namespace SatIp.DiscoverySample.Upnp
         /// Sends SsdpRequest M-SEARCH 
         /// </summary>
         /// <param name="searchterm"></param>
-        public void FindByType(string searchterm = "urn:ses-com:device:SatIPServer:1")
+        public void FindByType(string searchterm )
         {
             var query = new StringBuilder();
             query.Append("M-SEARCH * HTTP/1.1\r\n");
@@ -350,13 +353,7 @@ namespace SatIp.DiscoverySample.Upnp
             }
         }
 
-        protected void OnDeviceNotify(SatIpDeviceNotifyArgs args)
-        {
-            if (DeviceNotify != null)
-            {
-                DeviceNotify(this, args);
-            }
-        }
+        
 
         protected virtual void Dispose(bool disposing)
         {
