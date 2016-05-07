@@ -132,11 +132,11 @@ namespace SatIp.DiscoverySample.Upnp
                         }
 
                         var presentationUrlElement = deviceElement.Element(n0 + "presentationURL");
-                        if (presentationUrlElement != null) _presentationUrl = presentationUrlElement.Value;
+                        if (presentationUrlElement != null) _presentationUrl = locationUri.Scheme+"://"+locationUri.Host+":"+locationUri.Port + presentationUrlElement.Value;
                         var capabilitiesElement = deviceElement.Element(n1 + "X_SATIPCAP");
                         if (capabilitiesElement != null) _capabilities = capabilitiesElement.Value;
                         var m3uElement = deviceElement.Element(n1 + "X_SATIPM3U");
-                        if (m3uElement != null) _m3u = m3uElement.Value;
+                        if (m3uElement != null) _m3u = locationUri.Scheme + "://" + locationUri.Host + ":" + locationUri.Port + m3uElement.Value;
                     }
                 }
             }

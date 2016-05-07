@@ -317,7 +317,7 @@ namespace SatIp.DiscoverySample.Upnp
         /// <returns></returns>
         public bool Start()
         {
-            _unicastClient = new UdpClient(_unicastPort);
+            _unicastClient = new UdpClient(new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()),_unicastPort));
             _multicastClient = new UdpClient(_multicastPort);
             var ipSsdp = IPAddress.Parse(_multicastIp);
             _multicastClient.JoinMulticastGroup(ipSsdp);
@@ -398,8 +398,20 @@ namespace SatIp.DiscoverySample.Upnp
         private bool _disposed;
 
         #endregion
-
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("Local IP Address Not Found!");
+        }
     }
+    
     public class SatIpDeviceFoundArgs : EventArgs
     {
         public SatIpDevice Device { get; private set; }
