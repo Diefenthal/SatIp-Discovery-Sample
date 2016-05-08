@@ -51,22 +51,25 @@ namespace SatIp.DiscoverySample
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.tbxPresentationUrl = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbxManufactureUrl = new System.Windows.Forms.TextBox();
+            this.tbxManufacture = new System.Windows.Forms.TextBox();
+            this.tbxModelDescription = new System.Windows.Forms.TextBox();
+            this.tbxDeviceType = new System.Windows.Forms.TextBox();
+            this.tbxUniqueDeviceName = new System.Windows.Forms.TextBox();
+            this.tbxFriendlyName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.pbxDVBT = new System.Windows.Forms.PictureBox();
+            this.pbxDVBC = new System.Windows.Forms.PictureBox();
+            this.pbxDVBS = new System.Windows.Forms.PictureBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -74,6 +77,9 @@ namespace SatIp.DiscoverySample
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBT)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBC)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBS)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -90,20 +96,23 @@ namespace SatIp.DiscoverySample
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.pbxDVBS);
+            this.tabPage1.Controls.Add(this.pbxDVBC);
+            this.tabPage1.Controls.Add(this.pbxDVBT);
             this.tabPage1.Controls.Add(this.pictureBox1);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.label7);
-            this.tabPage1.Controls.Add(this.textBox7);
+            this.tabPage1.Controls.Add(this.tbxPresentationUrl);
             this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.textBox6);
-            this.tabPage1.Controls.Add(this.textBox5);
-            this.tabPage1.Controls.Add(this.textBox4);
-            this.tabPage1.Controls.Add(this.textBox3);
-            this.tabPage1.Controls.Add(this.textBox2);
-            this.tabPage1.Controls.Add(this.textBox1);
+            this.tabPage1.Controls.Add(this.tbxManufactureUrl);
+            this.tabPage1.Controls.Add(this.tbxManufacture);
+            this.tabPage1.Controls.Add(this.tbxModelDescription);
+            this.tabPage1.Controls.Add(this.tbxDeviceType);
+            this.tabPage1.Controls.Add(this.tbxUniqueDeviceName);
+            this.tabPage1.Controls.Add(this.tbxFriendlyName);
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -115,8 +124,8 @@ namespace SatIp.DiscoverySample
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Location = new System.Drawing.Point(358, 210);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(150, 150);
@@ -141,14 +150,14 @@ namespace SatIp.DiscoverySample
             this.label7.TabIndex = 15;
             this.label7.Text = "Presentation Url :";
             // 
-            // textBox7
+            // tbxPresentationUrl
             // 
-            this.textBox7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox7.Location = new System.Drawing.Point(127, 184);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(381, 20);
-            this.textBox7.TabIndex = 12;
+            this.tbxPresentationUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxPresentationUrl.Location = new System.Drawing.Point(127, 184);
+            this.tbxPresentationUrl.Name = "tbxPresentationUrl";
+            this.tbxPresentationUrl.Size = new System.Drawing.Size(381, 20);
+            this.tbxPresentationUrl.TabIndex = 12;
             // 
             // label6
             // 
@@ -186,60 +195,60 @@ namespace SatIp.DiscoverySample
             this.label3.TabIndex = 8;
             this.label3.Text = "Unique Device Name :";
             // 
-            // textBox6
+            // tbxManufactureUrl
             // 
-            this.textBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox6.Location = new System.Drawing.Point(127, 158);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(381, 20);
-            this.textBox6.TabIndex = 7;
+            this.tbxManufactureUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxManufactureUrl.Location = new System.Drawing.Point(127, 158);
+            this.tbxManufactureUrl.Name = "tbxManufactureUrl";
+            this.tbxManufactureUrl.Size = new System.Drawing.Size(381, 20);
+            this.tbxManufactureUrl.TabIndex = 7;
             // 
-            // textBox5
+            // tbxManufacture
             // 
-            this.textBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox5.Location = new System.Drawing.Point(127, 132);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(381, 20);
-            this.textBox5.TabIndex = 6;
+            this.tbxManufacture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxManufacture.Location = new System.Drawing.Point(127, 132);
+            this.tbxManufacture.Name = "tbxManufacture";
+            this.tbxManufacture.Size = new System.Drawing.Size(381, 20);
+            this.tbxManufacture.TabIndex = 6;
             // 
-            // textBox4
+            // tbxModelDescription
             // 
-            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox4.Location = new System.Drawing.Point(127, 84);
-            this.textBox4.Multiline = true;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(381, 42);
-            this.textBox4.TabIndex = 5;
+            this.tbxModelDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxModelDescription.Location = new System.Drawing.Point(127, 84);
+            this.tbxModelDescription.Multiline = true;
+            this.tbxModelDescription.Name = "tbxModelDescription";
+            this.tbxModelDescription.Size = new System.Drawing.Size(381, 42);
+            this.tbxModelDescription.TabIndex = 5;
             // 
-            // textBox3
+            // tbxDeviceType
             // 
-            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox3.Location = new System.Drawing.Point(127, 58);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(381, 20);
-            this.textBox3.TabIndex = 4;
+            this.tbxDeviceType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxDeviceType.Location = new System.Drawing.Point(127, 58);
+            this.tbxDeviceType.Name = "tbxDeviceType";
+            this.tbxDeviceType.Size = new System.Drawing.Size(381, 20);
+            this.tbxDeviceType.TabIndex = 4;
             // 
-            // textBox2
+            // tbxUniqueDeviceName
             // 
-            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(127, 32);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(383, 20);
-            this.textBox2.TabIndex = 3;
+            this.tbxUniqueDeviceName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxUniqueDeviceName.Location = new System.Drawing.Point(127, 32);
+            this.tbxUniqueDeviceName.Name = "tbxUniqueDeviceName";
+            this.tbxUniqueDeviceName.Size = new System.Drawing.Size(383, 20);
+            this.tbxUniqueDeviceName.TabIndex = 3;
             // 
-            // textBox1
+            // tbxFriendlyName
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(127, 6);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(381, 20);
-            this.textBox1.TabIndex = 2;
+            this.tbxFriendlyName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxFriendlyName.Location = new System.Drawing.Point(127, 6);
+            this.tbxFriendlyName.Name = "tbxFriendlyName";
+            this.tbxFriendlyName.Size = new System.Drawing.Size(381, 20);
+            this.tbxFriendlyName.TabIndex = 2;
             // 
             // label2
             // 
@@ -300,6 +309,30 @@ namespace SatIp.DiscoverySample
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
+            // pbxDVBT
+            // 
+            this.pbxDVBT.Location = new System.Drawing.Point(281, 340);
+            this.pbxDVBT.Name = "pbxDVBT";
+            this.pbxDVBT.Size = new System.Drawing.Size(71, 20);
+            this.pbxDVBT.TabIndex = 20;
+            this.pbxDVBT.TabStop = false;
+            // 
+            // pbxDVBC
+            // 
+            this.pbxDVBC.Location = new System.Drawing.Point(204, 340);
+            this.pbxDVBC.Name = "pbxDVBC";
+            this.pbxDVBC.Size = new System.Drawing.Size(71, 20);
+            this.pbxDVBC.TabIndex = 21;
+            this.pbxDVBC.TabStop = false;
+            // 
+            // pbxDVBS
+            // 
+            this.pbxDVBS.Location = new System.Drawing.Point(127, 340);
+            this.pbxDVBS.Name = "pbxDVBS";
+            this.pbxDVBS.Size = new System.Drawing.Size(71, 20);
+            this.pbxDVBS.TabIndex = 22;
+            this.pbxDVBS.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -319,6 +352,9 @@ namespace SatIp.DiscoverySample
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBT)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBC)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBS)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -326,17 +362,17 @@ namespace SatIp.DiscoverySample
         #endregion
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbxManufactureUrl;
+        private System.Windows.Forms.TextBox tbxManufacture;
+        private System.Windows.Forms.TextBox tbxModelDescription;
+        private System.Windows.Forms.TextBox tbxDeviceType;
+        private System.Windows.Forms.TextBox tbxUniqueDeviceName;
+        private System.Windows.Forms.TextBox tbxFriendlyName;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.TextBox tbxPresentationUrl;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
@@ -345,6 +381,9 @@ namespace SatIp.DiscoverySample
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.PictureBox pbxDVBS;
+        private System.Windows.Forms.PictureBox pbxDVBC;
+        private System.Windows.Forms.PictureBox pbxDVBT;
     }
 }
 

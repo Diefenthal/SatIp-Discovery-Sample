@@ -42,6 +42,9 @@ namespace SatIp.DiscoverySample.Upnp
         private Icon[] _iconList = new Icon[4];
         private string _capabilities = "";
         private string _m3u = "";
+        private bool _supportsDVBC;
+        private bool _supportsDVBS;
+        private bool _supportsDVBT;
 
         /// <summary>
         /// Default constructor.
@@ -132,9 +135,39 @@ namespace SatIp.DiscoverySample.Upnp
                         }
 
                         var presentationUrlElement = deviceElement.Element(n0 + "presentationURL");
-                        if (presentationUrlElement != null) _presentationUrl = locationUri.Scheme+"://"+locationUri.Host+":"+locationUri.Port + presentationUrlElement.Value;
+                        if (presentationUrlElement != null)
+                        { 
+                            if(presentationUrlElement.Value.StartsWith("Http;//"))
+                                _presentationUrl=presentationUrlElement.Value;
+                            _presentationUrl = locationUri.Scheme + "://" + locationUri.Host;
+                        }
+                        if (presentationUrlElement==null)
+                        {
+                            _presentationUrl = locationUri.Scheme + "://" + locationUri.Host;
+                        }
                         var capabilitiesElement = deviceElement.Element(n1 + "X_SATIPCAP");
-                        if (capabilitiesElement != null) _capabilities = capabilitiesElement.Value;
+                        if (capabilitiesElement != null)
+                        {
+                            _capabilities = capabilitiesElement.Value;
+                            if (capabilitiesElement.Value.Contains(','))
+                            {
+                                string[] capabilities = capabilitiesElement.Value.Split(',');
+                                foreach (var capability in capabilities)
+                                {
+                                    ReadCapability(capability);
+                                }
+                            }
+                            else
+                            {
+                                ReadCapability(capabilitiesElement.Value);
+                            }
+                        }
+                        else
+                        {
+                            _supportsDVBS = true;
+                            //ToDo Create only one Digital Recorder / Capture Instance here
+                        }
+
                         var m3uElement = deviceElement.Element(n1 + "X_SATIPM3U");
                         if (m3uElement != null) _m3u = locationUri.Scheme + "://" + locationUri.Host + ":" + locationUri.Port + m3uElement.Value;
                     }
@@ -265,7 +298,74 @@ namespace SatIp.DiscoverySample.Upnp
             set { _capabilities = value; }
         }
 
-        #endregion
+        public bool SupportsDVBC
+        {
+            get { return _supportsDVBC; }
+            set { _supportsDVBC = value; }
+        }
 
+        public bool SupportsDVBS
+        {
+            get { return _supportsDVBS; }
+            set { _supportsDVBS = value; }
+        }
+
+        public bool SupportsDVBT
+        {
+            get { return _supportsDVBT; }
+            set { _supportsDVBT = value; }
+        }
+
+        #endregion
+        private void ReadCapability(string capability)
+        {
+
+            string[] cap = capability.Split('-');
+            switch (cap[0].ToLower())
+            {
+                case "dvbs":
+                case "dvbs2":
+                    {
+                        // Optional that you know what an device Supports can you add an flag 
+                        _supportsDVBS = true;
+
+                        for (int i = 0; i < int.Parse(cap[1]); i++)
+                        {
+                            //ToDo Create Digital Recorder / Capture Instance here
+                        }
+
+                        break;
+                    }
+                case "dvbc":
+                case "dvbc2":
+                    {
+                        // Optional that you know what an device Supports can you add an flag 
+                        _supportsDVBC = true;
+
+                        for (int i = 0; i < int.Parse(cap[1]); i++)
+                        {
+                            //ToDo Create Digital Recorder / Capture Instance here
+                        }
+
+                        break;
+                    }
+                case "dvbt":
+                case "dvbt2":
+                    {
+                        // Optional that you know what an device Supports can you add an flag 
+                        _supportsDVBT = true;
+
+
+                        for (int i = 0; i < int.Parse(cap[1]); i++)
+                        {
+                            //ToDo Create Digital Recorder / Capture Instance here
+
+                        }
+
+                        break;
+                    }
+            }
+
+        }
     }
 }

@@ -77,13 +77,19 @@ namespace SatIp.DiscoverySample
             var device = (SatIpDevice)_client.FindByUDN(e.Node.Name);
             if (device != null)
             {
-                textBox1.Text = device.FriendlyName;
-                textBox2.Text = device.UniqueDeviceName;
-                textBox3.Text = device.DeviceType;
-                textBox4.Text = device.ModelDescription;
-                textBox5.Text = device.Manufacturer;
-                textBox6.Text = device.ManufacturerUrl;
-                textBox7.Text = device.PresentationUrl;
+                tbxFriendlyName.Text = device.FriendlyName;
+                tbxUniqueDeviceName.Text = device.UniqueDeviceName;
+                tbxDeviceType.Text = device.DeviceType;
+                tbxModelDescription.Text = device.ModelDescription;
+                tbxManufacture.Text = device.Manufacturer;
+                tbxManufactureUrl.Text = device.ManufacturerUrl;
+                tbxPresentationUrl.Text = device.PresentationUrl;
+                pbxDVBC.Image = Resources.dvb_c;
+                pbxDVBC.Visible = device.SupportsDVBC;
+                pbxDVBS.Image = Resources.dvb_s;
+                pbxDVBS.Visible = device.SupportsDVBS;
+                pbxDVBT.Image = Resources.dvb_t;
+                pbxDVBT.Visible = device.SupportsDVBT;
                 webBrowser1.DocumentText = device.DeviceDescription;
                 try
                 {
