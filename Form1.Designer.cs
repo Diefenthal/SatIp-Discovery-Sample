@@ -48,6 +48,9 @@ namespace SatIp.DiscoverySample
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.pbxDVBS = new System.Windows.Forms.PictureBox();
+            this.pbxDVBC = new System.Windows.Forms.PictureBox();
+            this.pbxDVBT = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -67,19 +70,17 @@ namespace SatIp.DiscoverySample
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.pbxDVBT = new System.Windows.Forms.PictureBox();
-            this.pbxDVBC = new System.Windows.Forms.PictureBox();
-            this.pbxDVBS = new System.Windows.Forms.PictureBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBS)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBC)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBT)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBT)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBC)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBS)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -121,6 +122,30 @@ namespace SatIp.DiscoverySample
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Device";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // pbxDVBS
+            // 
+            this.pbxDVBS.Location = new System.Drawing.Point(127, 340);
+            this.pbxDVBS.Name = "pbxDVBS";
+            this.pbxDVBS.Size = new System.Drawing.Size(71, 20);
+            this.pbxDVBS.TabIndex = 22;
+            this.pbxDVBS.TabStop = false;
+            // 
+            // pbxDVBC
+            // 
+            this.pbxDVBC.Location = new System.Drawing.Point(204, 340);
+            this.pbxDVBC.Name = "pbxDVBC";
+            this.pbxDVBC.Size = new System.Drawing.Size(71, 20);
+            this.pbxDVBC.TabIndex = 21;
+            this.pbxDVBC.TabStop = false;
+            // 
+            // pbxDVBT
+            // 
+            this.pbxDVBT.Location = new System.Drawing.Point(281, 340);
+            this.pbxDVBT.Name = "pbxDVBT";
+            this.pbxDVBT.Size = new System.Drawing.Size(71, 20);
+            this.pbxDVBT.TabIndex = 20;
+            this.pbxDVBT.TabStop = false;
             // 
             // pictureBox1
             // 
@@ -309,30 +334,6 @@ namespace SatIp.DiscoverySample
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
-            // pbxDVBT
-            // 
-            this.pbxDVBT.Location = new System.Drawing.Point(281, 340);
-            this.pbxDVBT.Name = "pbxDVBT";
-            this.pbxDVBT.Size = new System.Drawing.Size(71, 20);
-            this.pbxDVBT.TabIndex = 20;
-            this.pbxDVBT.TabStop = false;
-            // 
-            // pbxDVBC
-            // 
-            this.pbxDVBC.Location = new System.Drawing.Point(204, 340);
-            this.pbxDVBC.Name = "pbxDVBC";
-            this.pbxDVBC.Size = new System.Drawing.Size(71, 20);
-            this.pbxDVBC.TabIndex = 21;
-            this.pbxDVBC.TabStop = false;
-            // 
-            // pbxDVBS
-            // 
-            this.pbxDVBS.Location = new System.Drawing.Point(127, 340);
-            this.pbxDVBS.Name = "pbxDVBS";
-            this.pbxDVBS.Size = new System.Drawing.Size(71, 20);
-            this.pbxDVBS.TabIndex = 22;
-            this.pbxDVBS.TabStop = false;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -341,20 +342,20 @@ namespace SatIp.DiscoverySample
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.ShowIcon = false;
             this.Text = "Sat>Ip Discovery Sample";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBS)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBC)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBT)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBT)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBC)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxDVBS)).EndInit();
             this.ResumeLayout(false);
 
         }

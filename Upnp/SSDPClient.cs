@@ -234,7 +234,7 @@ namespace SatIp.DiscoverySample.Upnp
         public static Dictionary<string, string> Parse(string searchResponse)
         {
             var reader = new StringReader(searchResponse);
-            var line = reader.ReadLine();
+            var line = string.Empty;
             var values = new Dictionary<string, string>();
             while ((line = reader.ReadLine()) != null)
             {
