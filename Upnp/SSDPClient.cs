@@ -18,33 +18,33 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using SatIp.DiscoverySample.Logging;
 
 namespace SatIp.DiscoverySample.Upnp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class UdpState
     {
         public UdpClient U;
         public IPEndPoint E;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class SSDPClient
-    {
-
-        
+    {        
         private static readonly Regex UuidRegex = new Regex("(uuid:)(.+?)(?=(::)|$)");
         private static readonly Regex HttpResponseRegex = new Regex(@"HTTP/(\d+)\.(\d+)\s+(\d+)\s+([^.]+?)\r\n(.*)",
             RegexOptions.Singleline);
-
         private static readonly Regex MSearchResponseRegex = new Regex(@"M-SEARCH \* HTTP/(\d+)\.(\d+)\r\n(.*)",
             RegexOptions.Singleline);
-
         private static readonly Regex NotifyResponseRegex = new Regex(@"NOTIFY \* HTTP/(\d+)\.(\d+)\r\n(.*)",
             RegexOptions.Singleline);
 
@@ -57,6 +57,7 @@ namespace SatIp.DiscoverySample.Upnp
         private UdpClient _multicastClient;
         private UdpClient _unicastClient;
         private Dictionary<string, SatIpDevice> _devices = new Dictionary<string, SatIpDevice>();
+        private bool _disposed;
         #endregion
 
         #region Constructor
@@ -104,7 +105,7 @@ namespace SatIp.DiscoverySample.Upnp
                     if (msearchMatch.Success)
                     {
                         responseString = msearchMatch.Groups[3].Captures[0].Value;
-                        var headerDictionary = Parse(responseString);
+                        var headerDictionary = ProcessSsdpResponse(responseString);
                         string host;
                         headerDictionary.TryGetValue("host", out host);
                         string man;
@@ -118,7 +119,7 @@ namespace SatIp.DiscoverySample.Upnp
                     if (notifyMatch.Success)
                     {
                         responseString = notifyMatch.Groups[3].Captures[0].Value;
-                        var headerDictionary = Parse(responseString);
+                        var headerDictionary = ProcessSsdpResponse(responseString);
                         string location;
                         headerDictionary.TryGetValue("location", out location);
                         string host;
@@ -199,7 +200,7 @@ namespace SatIp.DiscoverySample.Upnp
                     if (httpMatch.Success)
                     {
                         responseString = httpMatch.Groups[5].Captures[0].Value;
-                        var headerDictionary = Parse(responseString);
+                        var headerDictionary = ProcessSsdpResponse(responseString);
                         string location;
                         headerDictionary.TryGetValue("location", out location);
                         string st;
@@ -229,9 +230,27 @@ namespace SatIp.DiscoverySample.Upnp
                     UnicastSetBeginReceive();
                 }
             }
+        }        
+
+        /// <summary>
+        /// Listen for Unicast SSDP Responses
+        /// </summary>
+        private void UnicastSetBeginReceive()
+        {
+            var ipRxEnd = new IPEndPoint(IPAddress.Any, _unicastPort);
+            var udpListener = new UdpState {E = ipRxEnd};
+            if (_unicastClient == null)
+                _unicastClient = new UdpClient(_unicastPort);
+            udpListener.U = _unicastClient;
+            _unicastClient.BeginReceive(UnicastReceiveCallback, udpListener);
         }
 
-        public static Dictionary<string, string> Parse(string searchResponse)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchResponse"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> ProcessSsdpResponse(string searchResponse)
         {
             var reader = new StringReader(searchResponse);
             var line = string.Empty;
@@ -257,20 +276,6 @@ namespace SatIp.DiscoverySample.Upnp
             }
             return values;
         }
-
-        /// <summary>
-        /// Listen for Unicast SSDP Responses
-        /// </summary>
-        private void UnicastSetBeginReceive()
-        {
-            var ipRxEnd = new IPEndPoint(IPAddress.Any, _unicastPort);
-            var udpListener = new UdpState {E = ipRxEnd};
-            if (_unicastClient == null)
-                _unicastClient = new UdpClient(_unicastPort);
-            udpListener.U = _unicastClient;
-            _unicastClient.BeginReceive(UnicastReceiveCallback, udpListener);
-        }
-
         #endregion
 
         #region Public Methods
@@ -351,9 +356,7 @@ namespace SatIp.DiscoverySample.Upnp
             {
                 DeviceLost(this, args);
             }
-        }
-
-        
+        }        
 
         protected virtual void Dispose(bool disposing)
         {
@@ -386,7 +389,7 @@ namespace SatIp.DiscoverySample.Upnp
 
         public delegate void DeviceLostHandler(object sender, SatIpDeviceLostArgs e);
 
-        public delegate void DeviceNotifyHandler(object sender, SatIpDeviceNotifyArgs e);
+       
 
         #endregion
 
@@ -394,8 +397,8 @@ namespace SatIp.DiscoverySample.Upnp
 
         public event DeviceFoundHandler DeviceFound;
         public event DeviceLostHandler DeviceLost;
-        public event DeviceNotifyHandler DeviceNotify;
-        private bool _disposed;
+        
+        
 
         #endregion
         public static string GetLocalIPAddress()
@@ -411,7 +414,10 @@ namespace SatIp.DiscoverySample.Upnp
             throw new Exception("Local IP Address Not Found!");
         }
     }
-    
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class SatIpDeviceFoundArgs : EventArgs
     {
         public SatIpDevice Device { get; private set; }
@@ -420,21 +426,7 @@ namespace SatIp.DiscoverySample.Upnp
         {
             Device = device;
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SatIpDeviceNotifyArgs : EventArgs
-    {
-
-        public String Uuid { get; private set; }
-
-        public SatIpDeviceNotifyArgs(string uuid)
-        {
-            Uuid = uuid;
-        }
-    }
+    }    
 
     /// <summary>
     /// 

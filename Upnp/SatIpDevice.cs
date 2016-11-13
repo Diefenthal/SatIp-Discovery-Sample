@@ -24,8 +24,12 @@ using SatIp.DiscoverySample.Logging;
 
 namespace SatIp.DiscoverySample.Upnp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SatIpDevice
     {
+        #region Private Fields
         private Uri _baseUrl;
         private string _deviceType = "";
         private string _friendlyName = "";
@@ -39,13 +43,15 @@ namespace SatIp.DiscoverySample.Upnp
         private string _uniqueDeviceName = "";
         private string _presentationUrl = "";
         private string _deviceDescription;
-        private Icon[] _iconList = new Icon[4];
+        private SatIpDeviceIcon[] _iconList = new SatIpDeviceIcon[4];
         private string _capabilities = "";
         private string _m3u = "";
         private bool _supportsDVBC;
         private bool _supportsDVBS;
-        private bool _supportsDVBT;
+        private bool _supportsDVBT; 
+        #endregion
 
+        #region Constructor
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -58,16 +64,26 @@ namespace SatIp.DiscoverySample.Upnp
             }
 
             Init(new Uri(url));
-        }
+        } 
+        #endregion
 
-        #region method Init
+        #region Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public string GetImage(int index)
         {
-            var icon=(Icon)_iconList.GetValue(index);
+            var icon = (SatIpDeviceIcon)_iconList.GetValue(index);
             return  icon.Url;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="locationUri"></param>
         private void Init(Uri locationUri)
         {
             try
@@ -121,7 +137,7 @@ namespace SatIp.DiscoverySample.Upnp
                         if (iconList != null)
                         {
                             var icons = from query in iconList.Descendants(n0 + "icon")
-                                select new Icon
+                                        select new SatIpDeviceIcon
                                 {
                                     // Needed to change mimeType to mimetype. XML is case sensitive 
                                     MimeType = (string) query.Element(n0 + "mimetype"),
@@ -178,11 +194,63 @@ namespace SatIp.DiscoverySample.Upnp
                 Logger.Error("It give a Problem with the Description {0}", exception);
             }
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="capability"></param>
+        private void ReadCapability(string capability)
+        {
+            string[] cap = capability.Split('-');
+            switch (cap[0].ToLower())
+            {
+                case "dvbs":
+                case "dvbs2":
+                    {
+                        // Optional that you know what an device Supports can you add an flag 
+                        _supportsDVBS = true;
+
+                        for (int i = 0; i < int.Parse(cap[1]); i++)
+                        {
+                            //ToDo Create Digital Recorder / Capture Instance here
+                        }
+
+                        break;
+                    }
+                case "dvbc":
+                case "dvbc2":
+                    {
+                        // Optional that you know what an device Supports can you add an flag 
+                        _supportsDVBC = true;
+
+                        for (int i = 0; i < int.Parse(cap[1]); i++)
+                        {
+                            //ToDo Create Digital Recorder / Capture Instance here
+                        }
+
+                        break;
+                    }
+                case "dvbt":
+                case "dvbt2":
+                    {
+                        // Optional that you know what an device Supports can you add an flag 
+                        _supportsDVBT = true;
+
+
+                        for (int i = 0; i < int.Parse(cap[1]); i++)
+                        {
+                            //ToDo Create Digital Recorder / Capture Instance here
+
+                        }
+
+                        break;
+                    }
+            }
+
+        }
         #endregion
 
-
-        #region Proeprties implementation
+        #region Proeprties
         
         /// <summary>
         /// Gets device type.
@@ -280,92 +348,96 @@ namespace SatIp.DiscoverySample.Upnp
             get{ return _deviceDescription; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Uri BaseUrl
         {
             get { return _baseUrl; }
             set { _baseUrl = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string M3U
         {
             get { return _m3u; }
             set { _m3u = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Capabilities
         {
             get { return _capabilities; }
             set { _capabilities = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool SupportsDVBC
         {
             get { return _supportsDVBC; }
             set { _supportsDVBC = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool SupportsDVBS
         {
             get { return _supportsDVBS; }
             set { _supportsDVBS = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool SupportsDVBT
         {
             get { return _supportsDVBT; }
             set { _supportsDVBT = value; }
         }
 
-        #endregion
-        private void ReadCapability(string capability)
+        #endregion        
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SatIpDeviceIcon
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public SatIpDeviceIcon()
         {
-
-            string[] cap = capability.Split('-');
-            switch (cap[0].ToLower())
-            {
-                case "dvbs":
-                case "dvbs2":
-                    {
-                        // Optional that you know what an device Supports can you add an flag 
-                        _supportsDVBS = true;
-
-                        for (int i = 0; i < int.Parse(cap[1]); i++)
-                        {
-                            //ToDo Create Digital Recorder / Capture Instance here
-                        }
-
-                        break;
-                    }
-                case "dvbc":
-                case "dvbc2":
-                    {
-                        // Optional that you know what an device Supports can you add an flag 
-                        _supportsDVBC = true;
-
-                        for (int i = 0; i < int.Parse(cap[1]); i++)
-                        {
-                            //ToDo Create Digital Recorder / Capture Instance here
-                        }
-
-                        break;
-                    }
-                case "dvbt":
-                case "dvbt2":
-                    {
-                        // Optional that you know what an device Supports can you add an flag 
-                        _supportsDVBT = true;
-
-
-                        for (int i = 0; i < int.Parse(cap[1]); i++)
-                        {
-                            //ToDo Create Digital Recorder / Capture Instance here
-
-                        }
-
-                        break;
-                    }
-            }
-
+            Url = "";
+            MimeType = "";
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Depth { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Height { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Width { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string MimeType { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Url { get; set; }
     }
 }

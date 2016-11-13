@@ -107,7 +107,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Upnp\SatIpDevice.cs" />
-    <Compile Include="Upnp\Icon.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Documents\satip discovery license.txt" />
