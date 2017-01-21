@@ -1,5 +1,5 @@
 ﻿/*  
-    Copyright (C) <2007-2016>  <Kay Diefenthal>
+    Copyright (C) <2007-2017>  <Kay Diefenthal>
 
     SatIp.DiscoverySample is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ namespace SatIp.DiscoverySample.Upnp
         private UdpClient _unicastClient;
         private Dictionary<string, SatIpDevice> _devices = new Dictionary<string, SatIpDevice>();
         private bool _disposed;
+        
         #endregion
 
         #region Constructor
@@ -72,6 +73,7 @@ namespace SatIp.DiscoverySample.Upnp
             _multicastPort = 1900;
             _unicastPort = 1901;
             _running = false;
+            
         }
 
         ~SSDPClient()
@@ -286,6 +288,7 @@ namespace SatIp.DiscoverySample.Upnp
         /// <param name="searchterm"></param>
         public void FindByType(string searchterm )
         {
+            DateTime start = DateTime.Now;
             var query = new StringBuilder();
             query.Append("M-SEARCH * HTTP/1.1\r\n");
             query.Append("HOST: 239.255.255.250:1900\r\n");
@@ -386,19 +389,15 @@ namespace SatIp.DiscoverySample.Upnp
         #region  Delegates
 
         public delegate void DeviceFoundHandler(object sender, SatIpDeviceFoundArgs e);
-
         public delegate void DeviceLostHandler(object sender, SatIpDeviceLostArgs e);
-
-       
 
         #endregion
 
         #region Public Events
 
         public event DeviceFoundHandler DeviceFound;
-        public event DeviceLostHandler DeviceLost;
-        
-        
+        public event DeviceLostHandler DeviceLost;        
+
 
         #endregion
         public static string GetLocalIPAddress()
