@@ -5,7 +5,7 @@ Sat>Ip Server Discovery Sample discover all Sat>Ip Servers and Shows the Informa
 has an Log Function and save the Log to C:\ProgramData\SatIp Discovery Sample\Logs
 and is writen in C# .net 3.5
 
-Tested with following Devices
+successful tested with following Sat>Ip Server
 ======================
 Digital Devices OctopusNet, 
 Triax Tss400,
