@@ -6,10 +6,10 @@ has an Log Function and save the Log to C:\ProgramData\SatIp Discovery Sample\Lo
 and is writen in C# .net 3.5
 
 Tested with following Devices
-
-Digital Devices OctopusNet 
-Triax Tss400
-Telestar Digibit R1
-Grundig Gss 400
-Elgato EyeTv Netstream 4Sat
+======================
+Digital Devices OctopusNet, 
+Triax Tss400,
+Telestar Digibit R1,
+Grundig Gss 400,
+Elgato EyeTv Netstream 4Sat,
 
